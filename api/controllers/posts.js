@@ -10,9 +10,9 @@ export const getPosts = (req, res) => {
     jwt.verify(token, "secretkey", (err, userInfo) => {
         if (err) return res.status(403).json("Token is not valid!");
     
-        const q = 'SELECT p.*, u.user_ID, u.name, u.profilePic FROM posts AS p JOIN users AS u ON (p.user_ID = u.user_ID) ORDER BY p.timestamp DESC';
+        const q = 'SELECT p.*, u.user_ID, u.name, u.profilePic FROM posts AS p JOIN users AS u ON p.user_ID = u.user_ID WHERE u.user_ID = ? OR u.user_ID IN (SELECT user_ID1 FROM friends WHERE user_ID2 = ? UNION SELECT user_ID2 FROM friends WHERE user_ID1 = ?) ORDER BY p.timestamp DESC';
         
-    db.query(q,[userInfo.user_ID,userInfo.user_ID], (err, data) => {
+    db.query(q,[userInfo.user_ID,userInfo.user_ID,userInfo.user_ID], (err, data) => {
         if (err) {
             return res.status(500).json(err);
         }
@@ -29,7 +29,7 @@ export const addPost = (req, res) => {
     jwt.verify(token, "secretkey", (err, userInfo) => {
         if (err) return res.status(403).json("Token is not valid!");
     
-        const q = "INSERT INTO posts (content,img, timestamp, user_ID) VALUES (?)";
+        const q = "CALL add_post(?)";
 
         const values = [
             req.body.content,

@@ -58,6 +58,16 @@
       @include mobile{
         display: none;
       }
+      button {
+        width: 50%;
+        padding: 10px;
+        border: 5px;
+        border: 2px solid white; /* Ensure style and color are specified */
+        background-color: transparent;
+        color: rgb(255, 255, 255);
+        font-weight: bold;
+        cursor: pointer;
+      }
 
       .user {
         display: flex;

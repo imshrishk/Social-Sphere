@@ -11,16 +11,28 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { toggle, darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
+    const { logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+  
+    const handleLogout = async () => {
+      try {
+        await logout(); // Assuming logout() is defined in AuthContext and performs the logout action
+        navigate("/login?"); // Navigate to the login page after logout
+      } catch (err) {
+        console.error("Logout failed:", err);
+      }
+    };
 
   return (
     <div className="navbar">
       <div className="left">
         <Link to="/" style={{ textDecoration: "none" }}>
-          <span>SOCIOSPHERE</span>
+          <span>SOCIALSPHERE</span>
         </Link>
         <HomeOutlinedIcon />
         {darkMode ? (
@@ -38,6 +50,7 @@ const Navbar = () => {
         <PersonOutlinedIcon />
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
+        <button onClick={handleLogout}>logout</button>
         <div className="user">
           <img
             src={currentUser.profilePic}
